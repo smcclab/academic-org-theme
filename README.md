@@ -32,6 +32,17 @@ TODO: Write usage instructions here. Describe your available layouts, includes, 
 
 The theme uses [`jekyll-seo-tag`](https://github.com/jekyll/jekyll-seo-tag/) to provide metadata in the page headers, you may want to look at the [usage](https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md) page for that plugin.
 
+## External (CDN) dependencies
+
+`_includes/head.html` loads the following stylesheets and scripts from public CDNs. If you would rather self-host (for privacy, reliability, or offline builds), download the corresponding versions and replace the `<link>` / `<script>` URLs with a `{% link assets/... %}` path.
+
+| Dependency | Version | Source |
+| --- | --- | --- |
+| Font Awesome | 6.7.2 | `cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/` |
+| Academicons | 1.9.4 | `cdnjs.cloudflare.com/ajax/libs/academicons/1.9.4/` |
+| Bootstrap CSS | 5.3.0-alpha2 | `cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/` |
+| lite-youtube | 1.x | `cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/` |
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/smcclab/academic-org-theme. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](https://www.contributor-covenant.org/) code of conduct.
