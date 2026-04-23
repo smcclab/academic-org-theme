@@ -1,3 +1,6 @@
+# Demo committee for the TechArts 2025 example schedule. Roles align with
+# the session chairs referenced in _data/sessions.yml.
+
 - name: Sophee Nguyen
   aff: Quantum Valley University
   im: "assets/committee/default-person.jpg"
@@ -7,20 +10,20 @@
 - name: Rajesh Patel
   aff: Neodigital Academy of Sciences
   im: "assets/committee/default-person.jpg"
-  role: Keynote Speaker Coordinator
+  role: Papers Chair
   url: "https://rajeshpatel.edu"
-
-- name: Elane Rodriguez
-  aff: Global Synergy Institute
-  im: "assets/committee/default-person.jpg"
-  role: Poster Session Chair
-  url: "https://elenaml.edu"
 
 - name: Alexander Ivanov
   aff: Futuristic Horizons University
   im: "assets/committee/default-person.jpg"
-  role: Sponsorship Chair
+  role: Artworks Chair
   url: "https://aivanov-fhu.edu"
+
+- name: Elane Rodriguez
+  aff: Global Synergy Institute
+  im: "assets/committee/default-person.jpg"
+  role: Workshops Chair
+  url: "https://elenaml.edu"
 
 - name: Yuki Tanaka
   aff: Innovate Tech College
