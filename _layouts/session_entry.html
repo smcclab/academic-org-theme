@@ -5,7 +5,7 @@ layout: default
 <article>
   {% if page.title %}
   <div class="my-4">
-    <h1 class="">Session: {{ page.entry.title }}</h1>
+    <h1 class="">{{ page.entry.title }}{% if page.entry.subtitle %}: {{ page.entry.subtitle }}{% endif %}</h1>
     {% if page.entry.chair %}<h4>Chair: {{ page.entry.chair }}</h4>{% endif %}
   </div>
   {% endif %}
@@ -15,9 +15,15 @@ layout: default
   <div class="my-4 p-2">
     {% if page.entry.image_url %}
     <div class="entry-image">
-      <img src="{{ site.baseurl }}/{{ page.entry.image_url }}" alt="{{ page.title }}" class="img-fluid rounded">
+      <figure class="figure">
+        <img src="{{ site.baseurl }}/{{ page.entry.image_url }}" alt="{{ page.title }}" class="img-fluid rounded">
+        {% if page.entry.image_credit %}
+        <figcaption class="figure-caption">Image credit: {{ page.entry.image_credit }}</figcaption>
+        {% endif %}
+      </figure>
     </div>
     {% endif %}
+
     <ul>
       {% if page.entry.date %}<li>{{ page.entry.date }}</li>{% endif %}
       {% if page.entry.location %}<li>Location: {{ page.entry.location }}</li>{% endif %}
@@ -25,20 +31,39 @@ layout: default
       {% if page.entry.video_url %}<li><a href="{{ page.entry.video_url }}">Video link</a></li>{% endif %}
     </ul>
 
-    {% assign session_papers = site.data.proceedings | where: "session_code", page.entry.id %}
+    {% if page.entry.abstract %}
+    {{ page.entry.abstract | markdownify }}
+    {% endif %}
+
+    {% assign session_papers = "" | split: "" %}
+    {% for paper in site.data.proceedings %}
+      {% if paper.session_code %}
+        {% assign paper_codes = paper.session_code | split: "," %}
+        {% assign matched = false %}
+        {% for code in paper_codes %}
+          {% assign trimmed = code | strip %}
+          {% if trimmed == page.entry.id %}
+            {% assign matched = true %}
+          {% endif %}
+        {% endfor %}
+        {% if matched %}
+          {% assign session_papers = session_papers | push: paper %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% unless session_papers == empty %}
+    {% assign session_papers = session_papers | sort: 'session_position' %}
 
     <h2>Presentations:</h2>
     <ul>
     {% for paper in session_papers %}
     {% capture proceeding_entry_url %}{{ paper.id | datapage_url: "proceedings" | relative_url }}{% endcapture %}
-
       <li>
-        <a href="{{ proceeding_entry_url }}"><strong>{{ paper.title }}</strong></a><br>
-        by {{ paper.authors }}<br>
+        <a href="{{ proceeding_entry_url }}"><strong>{{ paper.title }}</strong></a>{% if paper.duration %} ({{ paper.duration }} minutes){% endif %}{% if paper.paper_url %} <a href="{{ paper.paper_url }}">(PDF link)</a>{% endif %}<br>
+        by {{ paper.authors }}
       </li>
     {% endfor %}
     </ul>
-
-
+    {% endunless %}
   </div>
 </article>
