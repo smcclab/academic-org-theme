@@ -1,23 +1,154 @@
-- id: research1
-  title: Sustainable Engineering
-  chair: Sophee Nguyen
-  date: Monday 2024-06-03 11:00-12:30 AEST
-  start: '2024-06-03T11:00:00'
-  end: '2024-06-03T12:30:00'
-  location: "Council of Experts Theatre"
-  type: papers
-  image_url: assets/charles-martin-ventilation.jpg
-  video_url: https://www.youtube.com/live/aL8uG1PRkIY
-  allDay : false
+# Demo conference schedule: a fictional two-day event ("TechArts 2025") spanning
+# a Papers track, an Artworks track, a Workshops track, two keynotes, and a
+# community townhall. Used to demonstrate how the theme's session / proceedings
+# data model composes across tracks.
 
-- id: poster1
-  title: Human-Computer Interaction
+# Day 1 - Thursday
+
+- id: registration
+  title: Registration & Welcome Coffee
+  date: Thursday 2025-10-16 09:00-09:30
+  start: '2025-10-16T09:00:00'
+  end: '2025-10-16T09:30:00'
+  location: "Main Foyer"
+  type: admin
+  allDay: false
+
+- id: keynote-1
+  title: Opening Keynote
+  subtitle: Foundations of Creative Computing
+  chair: Sophee Nguyen
+  date: Thursday 2025-10-16 09:30-10:30
+  start: '2025-10-16T09:30:00'
+  end: '2025-10-16T10:30:00'
+  location: "Main Auditorium"
+  type: keynote
+  image_url: assets/research_image.jpg
+  image_credit: Stock Photos Inc.
+  abstract: |
+    **Dr. Marta Li** opens the conference with a keynote tracing the history
+    of creative computing — from early algorithmic art through contemporary
+    generative systems — and asking what the next decade of hybrid
+    human-machine practice might look like.
+  allDay: false
+
+- id: papers-1
+  title: Papers 1
+  subtitle: Embodied Interaction
   chair: Rajesh Patel
-  date: Monday 2024-06-03 14:00-15:30 AEST
-  start: '2024-06-03T14:00:00'
-  end: '2024-06-03T15:30:00'
-  location: "Rising Stars Hall"
-  type: poster
+  date: Thursday 2025-10-16 11:00-12:30
+  start: '2025-10-16T11:00:00'
+  end: '2025-10-16T12:30:00'
+  location: "Auditorium A"
+  type: papers
+  allDay: false
+
+- id: workshop-a
+  title: "Workshop: Designing Tangible Controllers"
+  chair: Elane Rodriguez
+  date: Thursday 2025-10-16 14:00-17:00
+  start: '2025-10-16T14:00:00'
+  end: '2025-10-16T17:00:00'
+  location: "Lab 1"
+  type: workshops
   image_url: assets/charles-martin-ventilation.jpg
-  video_url: https://www.youtube.com/live/Q8z7hx4g2bg
-  allDay : false
+  image_credit: Charles Martin
+  allDay: false
+
+- id: workshop-b
+  title: "Workshop: Browser-based Creative Coding"
+  chair: Alexander Ivanov
+  date: Thursday 2025-10-16 14:00-17:00
+  start: '2025-10-16T14:00:00'
+  end: '2025-10-16T17:00:00'
+  location: "Lab 2"
+  type: workshops
+  allDay: false
+
+- id: artworks-exhibition
+  title: Artworks
+  subtitle: Installations
+  chair: Alexander Ivanov
+  date: Thursday 2025-10-16 17:00-20:00
+  start: '2025-10-16T17:00:00'
+  end: '2025-10-16T20:00:00'
+  location: "Gallery Hall"
+  type: artworks
+  abstract: |
+    A curated exhibition of interactive installations from the Artworks track.
+    Installations remain open through the evening reception and into the
+    following day.
+  allDay: false
+
+- id: artworks-performance
+  title: Artworks
+  subtitle: Performance Night
+  chair: Alexander Ivanov
+  date: Thursday 2025-10-16 19:30-21:30
+  start: '2025-10-16T19:30:00'
+  end: '2025-10-16T21:30:00'
+  location: "Black Box Theatre"
+  type: artworks
+  allDay: false
+
+# Day 2 - Friday
+
+- id: keynote-2
+  title: Closing Keynote
+  subtitle: Algorithmic Ecologies
+  chair: Sophee Nguyen
+  date: Friday 2025-10-17 09:00-10:00
+  start: '2025-10-17T09:00:00'
+  end: '2025-10-17T10:00:00'
+  location: "Main Auditorium"
+  type: keynote
+  image_url: assets/research_image.jpg
+  abstract: |
+    **Prof. Rohan Patel** closes the conference with a keynote on *algorithmic
+    ecologies* — the entanglement of generative systems, data, and the
+    cultural contexts in which they are deployed.
+  allDay: false
+
+- id: papers-2
+  title: Papers 2
+  subtitle: Posters & Demos
+  chair: Rajesh Patel
+  date: Friday 2025-10-17 10:30-12:00
+  start: '2025-10-17T10:30:00'
+  end: '2025-10-17T12:00:00'
+  location: "Rising Stars Hall"
+  type: papers
+  allDay: false
+
+- id: workshop-c
+  title: "Workshop: Generative Audio for Live Performance"
+  chair: Elane Rodriguez
+  date: Friday 2025-10-17 13:30-16:30
+  start: '2025-10-17T13:30:00'
+  end: '2025-10-17T16:30:00'
+  location: "Lab 1"
+  type: workshops
+  allDay: false
+
+- id: townhall
+  title: Community Townhall
+  chair: Sophee Nguyen
+  date: Friday 2025-10-17 16:45-17:45
+  start: '2025-10-17T16:45:00'
+  end: '2025-10-17T17:45:00'
+  location: "Main Auditorium"
+  type: discussion
+  abstract: |
+    Open community discussion: venue selection for next year, steering
+    committee renewal, and proposals for changes to the three calls.
+    All attendees are encouraged to participate.
+  allDay: false
+
+- id: closing
+  title: Closing Remarks
+  date: Friday 2025-10-17 17:45-18:00
+  start: '2025-10-17T17:45:00'
+  end: '2025-10-17T18:00:00'
+  location: "Main Auditorium"
+  type: admin
+  allDay: false
