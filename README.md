@@ -28,9 +28,100 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here. Describe your available layouts, includes, sass and/or assets.
+The theme ships with a small set of layouts, a navigation-driven top bar, and a data-pipeline that generates one page per row in `_data/proceedings.csv` and `_data/sessions.yml`. Most consuming sites can get started by setting a handful of config keys and adding Markdown pages that use `layout: page`.
 
-The theme uses [`jekyll-seo-tag`](https://github.com/jekyll/jekyll-seo-tag/) to provide metadata in the page headers, you may want to look at the [usage](https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md) page for that plugin.
+### Required config
+
+A minimal `_config.yml` for a theme consumer looks like this:
+
+```yaml
+title: My Conference 2026
+tagline: A short subtitle shown under the site title.
+description: >-
+  Longer description used by jekyll-seo-tag for meta tags and feeds.
+url: "https://example.org"
+baseurl: ""
+
+logo: /assets/logo.svg      # shown in the top-left of the nav
+favicon: /assets/logo.svg
+footer_copyright: My Conference
+
+plugins:
+  - jekyll-datapage-generator
+  - jekyll-seo-tag
+
+navigation_header:
+  - title: Home
+    url: /
+  - title: Call
+    url: /call/
+  - title: Program
+    url: /program/
+  - title: Committee
+    url: /committee/
+```
+
+Adding a page does **not** add it to the nav — update `navigation_header` too.
+
+### Layouts
+
+| Layout | When to use |
+| --- | --- |
+| `page` | Standard content page with optional feature image. Wraps `default`. |
+| `post` | Blog-style post with title/date. Wraps `default`. |
+| `default` | Raw outer shell (nav + footer + scripts). Use when you need full control of the page body. |
+| `proceeding_entry` | Auto-applied to each row of `_data/proceedings.csv` by the data-page generator. |
+| `session_entry` | Auto-applied to each row of `_data/sessions.yml` by the data-page generator. |
+
+Example page front matter:
+
+```yaml
+---
+title: Call for Papers
+layout: page
+feature_image: assets/hero.jpg
+# Or, for a dark-mode aware hero:
+# feature_image_light: assets/hero-light.jpg
+# feature_image_dark: assets/hero-dark.jpg
+---
+```
+
+### Data-driven pages: proceedings and sessions
+
+The theme's headline feature is automatic generation of one page per paper and one page per session, with cross-links between them. This is driven by `jekyll-datapage-generator` and configured under `page_gen:` in `_config.yml` (see the demo config in this repo for the canonical setup).
+
+- **`_data/proceedings.csv`** → `/proceedings/<id>.html`. Columns include `id`, `title`, `authors`, `abstract`, `session_code`, `session_position`, `paper_url`, `video_url`, `slides_url`, `image_url`, `type`, `format`, `duration`, `presence`, `speaker`, `location`.
+- **`_data/sessions.yml`** → `/sessions/<id>.html`. Keys include `id`, `title`, `subtitle`, `chair`, `date`, `start`, `end`, `location`, `type`, `allDay`.
+
+A paper is linked to a session by matching `session_code` against a session's `id`. `session_code` may be a comma-separated list, so a single paper/artwork can appear in multiple sessions. Within a session, entries are ordered by `session_position`.
+
+To link between generated pages from a template, use the `datapage_url` filter:
+
+```liquid
+<a href="{{ entry.id | datapage_url: 'sessions' | relative_url }}">{{ entry.title }}</a>
+```
+
+The string argument (`"sessions"` or `"proceedings"`) must match the `data:` key under `page_gen:`.
+
+### Program page
+
+`program.md` in this repo renders a FullCalendar view by `jsonify`-ing `site.data.sessions` and injecting a `url` for each generated session page. Copy it into your consuming site as a starting point if you want the same calendar.
+
+### Committee page
+
+`_data/committee.yml` is a flat list of `{name, aff, im, role, url}` entries. `committee.md` iterates it to render a cards grid.
+
+### Feature images and dark mode
+
+`feature_image` renders a single hero image. For a dark-mode-aware hero, set `feature_image_light` and `feature_image_dark` instead — a small script in `_includes/scripts.html` swaps the image based on the user's system preference.
+
+### SEO
+
+The theme includes [`jekyll-seo-tag`](https://github.com/jekyll/jekyll-seo-tag/) for metadata in page headers. See its [usage page](https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md) for the front-matter keys it consumes (`title`, `description`, `image`, `author`, and so on).
+
+### Styling
+
+Styles live in `assets/styles.scss` on top of Bootstrap 5.3.0-alpha2. To override theme styles in a consuming site, create your own `assets/styles.scss` with the same path — Jekyll will prefer the site's copy over the one from the gem. `_sass/` is available for partials if you want to split things up.
 
 ## External (CDN) dependencies
 
