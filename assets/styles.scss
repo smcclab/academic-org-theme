@@ -1,10 +1,12 @@
 ---
 ---
+@use "sass:color";
 
 // Fonts
 $header-font: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 $body-font: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 $code-font: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
 
 html {
     font-family: $body-font;
@@ -13,6 +15,7 @@ html {
 body {
   font-family: $body-font;
   font-weight: normal;
+  padding-top: 1em;
 }
 
 p {
@@ -56,6 +59,14 @@ blockquote p {
     border-radius: 5px;
 }
 
+.center {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 article {
 
     img:not(.card-img-top) {
@@ -64,6 +75,12 @@ article {
         height: inherit !important;
         display:block;
         margin:auto;
+    }
+
+    .card-img-top {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
     }
 
     .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
@@ -94,7 +111,7 @@ $ui-4: #4d4bcd;
 .container a, main a {
     color: $ui-4;
     font-weight: 500;
-    
+
     &:hover {
         color: #fff;
         background: $ui-gradient !important;
@@ -106,7 +123,49 @@ $ui-4: #4d4bcd;
 }
 
 .feature-image {
-    height: 12rem;
-    background-position: center center;
-    background-repeat: no-repeat;
+    position: relative;
+    width: 100%;
+    padding-top: 23.7%;
+    background-size: cover;
+    background-position: center;
+}
+
+// Callout boxes (adapted from the ANU neotheme).
+@function tint($color, $level: 0) {
+    @return color.mix(#ffffff, $color, $level * 22%);
+}
+
+%callout-box {
+    padding: 1rem;
+    border-top: 4px solid tint(#000000, 3);
+    background-color: tint(#000000, 4);
+    margin: 1rem 0;
+
+    *:first-child {
+        margin-top: 0;
+    }
+
+    *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.callout-box {
+    @extend %callout-box;
+}
+
+$info-color: #0d6efd;
+
+.info-box {
+    @extend %callout-box;
+    border-color: $info-color;
+    background: tint($info-color, 4);
+}
+
+$warning-color: #ffc107;
+
+.warning-box {
+    @extend %callout-box;
+    border-color: $warning-color;
+    background: tint($warning-color, 4);
 }
