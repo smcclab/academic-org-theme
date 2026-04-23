@@ -28,8 +28,8 @@
       {% endfor %}
     </ul>
 
-    <button id="themeToggle" class="btn btn-outline-secondary">
-      <i class="bi bi-sun-fill"></i> Light
+    <button id="themeToggle" class="btn btn-outline-secondary" type="button" aria-label="Toggle colour theme">
+      <i class="fa-solid fa-circle-half-stroke"></i> Auto
     </button>
   </div>
   </div>
@@ -39,25 +39,23 @@
   (function () {
     const html = document.documentElement;
     const themeToggle = document.getElementById('themeToggle');
+    const mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
-    if (!html.getAttribute('data-bs-theme')) {
-      html.setAttribute('data-bs-theme', 'light');
+    function getChoice() {
+      try {
+        const v = localStorage.getItem('theme');
+        if (v === 'light' || v === 'dark') return v;
+      } catch (_) {}
+      return 'auto';
     }
 
-    function applyTheme(theme) {
-      html.setAttribute('data-bs-theme', theme);
+    function resolve(choice) {
+      if (choice === 'light' || choice === 'dark') return choice;
+      return (mql && mql.matches) ? 'dark' : 'light';
+    }
+
+    function updateImages(theme) {
       const key = theme === 'dark' ? 'darkImg' : 'lightImg';
-
-      if (theme === 'dark') {
-        themeToggle.innerHTML = '<i class="bi bi-moon-fill"></i> Dark';
-        themeToggle.classList.remove('btn-outline-secondary');
-        themeToggle.classList.add('btn-outline-light');
-      } else {
-        themeToggle.innerHTML = '<i class="bi bi-sun-fill"></i> Light';
-        themeToggle.classList.remove('btn-outline-light');
-        themeToggle.classList.add('btn-outline-secondary');
-      }
-
       document.querySelectorAll('[data-light-img][data-dark-img]').forEach((el) => {
         const url = el.dataset[key];
         if (!url) return;
@@ -69,11 +67,39 @@
       });
     }
 
-    applyTheme(html.getAttribute('data-bs-theme'));
+    function updateButton(choice, theme) {
+      let icon, label;
+      if (choice === 'auto') { icon = 'fa-circle-half-stroke'; label = 'Auto'; }
+      else if (choice === 'dark') { icon = 'fa-moon'; label = 'Dark'; }
+      else { icon = 'fa-sun'; label = 'Light'; }
+      themeToggle.innerHTML = `<i class="fa-solid ${icon}"></i> ${label}`;
+      themeToggle.classList.remove('btn-outline-secondary', 'btn-outline-light');
+      themeToggle.classList.add(theme === 'dark' ? 'btn-outline-light' : 'btn-outline-secondary');
+    }
+
+    function apply(choice) {
+      const theme = resolve(choice);
+      html.setAttribute('data-bs-theme', theme);
+      updateImages(theme);
+      updateButton(choice, theme);
+    }
+
+    apply(getChoice());
 
     themeToggle.addEventListener('click', () => {
-      const next = html.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
-      applyTheme(next);
+      const cur = getChoice();
+      const next = cur === 'auto' ? 'light' : cur === 'light' ? 'dark' : 'auto';
+      try {
+        if (next === 'auto') localStorage.removeItem('theme');
+        else localStorage.setItem('theme', next);
+      } catch (_) {}
+      apply(next);
     });
+
+    if (mql) {
+      const onChange = () => { if (getChoice() === 'auto') apply('auto'); };
+      if (mql.addEventListener) mql.addEventListener('change', onChange);
+      else if (mql.addListener) mql.addListener(onChange);
+    }
   })();
 </script>
