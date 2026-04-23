@@ -1,14 +1,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ page.title }}</title>
-<meta name="description" content="{{ page.description }}">
-
-<!-- Open Graph meta tags for link previews -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="{{ page.title }}">
-<meta property="og:description" content="{{ page.description }}">
-{% if page.image %}<meta property="og:image" content="{{ page.image | absolute_url }}">{% endif %}
 
 <!-- favicons -->
 <link rel="icon" href="{{ site.favicon | relative_url }}">
@@ -22,6 +14,6 @@
 <link rel="stylesheet" type="text/css" href='{{ "/assets/styles.css" | relative_url }}'>
 
 <!-- scripts -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.8.1/lite-youtube.min.js"></script>
 
 {% seo %}

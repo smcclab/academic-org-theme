@@ -1,7 +1,5 @@
 ---
 ---
-@use "sass:color";
-
 // Fonts
 $header-font: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 $body-font: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -15,7 +13,6 @@ html {
 body {
   font-family: $body-font;
   font-weight: normal;
-  padding-top: 1em;
 }
 
 p {
@@ -132,7 +129,7 @@ $ui-4: #4d4bcd;
 
 // Callout boxes (adapted from the ANU neotheme).
 @function tint($color, $level: 0) {
-    @return color.mix(#ffffff, $color, $level * 22%);
+    @return mix(#ffffff, $color, $level * 22%);
 }
 
 %callout-box {

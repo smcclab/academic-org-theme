@@ -69,6 +69,8 @@
       });
     }
 
+    applyTheme(html.getAttribute('data-bs-theme'));
+
     themeToggle.addEventListener('click', () => {
       const next = html.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
       applyTheme(next);

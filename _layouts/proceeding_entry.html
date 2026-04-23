@@ -3,12 +3,16 @@ layout: default
 ---
 
 {% if page.entry.session_code %}
-  {% assign session_codes = page.entry.session_code | split: "," %}
+  {% assign raw_codes = page.entry.session_code | split: "," %}
+  {% assign session_codes = "" | split: "" %}
   {% assign session_urls = "" | split: "" %}
-  {% for session_code in session_codes %}
-    {% assign trimmed_code = session_code | strip %}
-    {% assign session_url = trimmed_code | datapage_url: "sessions" | relative_url %}
-    {% assign session_urls = session_urls | push: session_url %}
+  {% for raw_code in raw_codes %}
+    {% assign trimmed_code = raw_code | strip %}
+    {% if trimmed_code != "" %}
+      {% assign session_codes = session_codes | push: trimmed_code %}
+      {% assign session_url = trimmed_code | datapage_url: "sessions" | relative_url %}
+      {% assign session_urls = session_urls | push: session_url %}
+    {% endif %}
   {% endfor %}
 {% endif %}
 
@@ -38,16 +42,14 @@ layout: default
     {% endif %}
     <ul>
       {% if page.entry.format %}<li>Format: {{ page.entry.format }}</li>{% endif %}
-      {% if page.entry.session_code %}
-      <li>Session: 
+      {% if session_codes and session_codes.size > 0 %}
+      <li>Session:
         {% assign num = session_codes.size | minus: 1 %}
         {% for i in (0..num) %}
-          {% if session_codes[i] %}
-          <a href="{{ session_urls[i] }}">{{ session_codes[i] | strip }}</a>{% unless forloop.last %}, {% endunless %}
-          {% endif %}
+          <a href="{{ session_urls[i] }}">{{ session_codes[i] }}</a>{% unless forloop.last %}, {% endunless %}
         {% endfor %}
-      {% endif %}
       </li>
+      {% endif %}
       {% if page.entry.paper_url %}<li><a href="{{ page.entry.paper_url }}">Paper PDF link</a></li>{% endif %}
       {% if page.entry.video_url %}<li><a href="{{ page.entry.video_url }}">Video link</a></li>{% endif %}
       {% if page.entry.slides_url %}<li><a href="{{ page.entry.slides_url }}">Slides link</a></li>{% endif %}

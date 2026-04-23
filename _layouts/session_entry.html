@@ -35,7 +35,22 @@ layout: default
     {{ page.entry.abstract | markdownify }}
     {% endif %}
 
-    {% assign session_papers = site.data.proceedings | where_exp: "paper", "paper.session_code contains page.entry.id" %}
+    {% assign session_papers = "" | split: "" %}
+    {% for paper in site.data.proceedings %}
+      {% if paper.session_code %}
+        {% assign paper_codes = paper.session_code | split: "," %}
+        {% assign matched = false %}
+        {% for code in paper_codes %}
+          {% assign trimmed = code | strip %}
+          {% if trimmed == page.entry.id %}
+            {% assign matched = true %}
+          {% endif %}
+        {% endfor %}
+        {% if matched %}
+          {% assign session_papers = session_papers | push: paper %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
     {% unless session_papers == empty %}
     {% assign session_papers = session_papers | sort: 'session_position' %}
 
