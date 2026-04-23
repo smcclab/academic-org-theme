@@ -1,0 +1,149 @@
+{%- comment -%}
+  FullCalendar + timezone picker.
+
+  The consuming page must define a JS array of FullCalendar event objects
+  (each with start/end/title, optionally url/backgroundColor/borderColor/
+  extendedProps.subtitle) in a variable whose name matches `events_var`,
+  in a <script> block that runs before this include.
+
+  Parameters (all optional):
+    events_var              JS variable name holding the events array.
+                            Default: "calendarEvents".
+    calendar_id             id of the calendar container div. Default: "calendar".
+    selector_id             id of the timezone <select>. Default: "timezone-selector".
+    display_id              id of the current-timezone display span.
+                            Default: "current-timezone-display".
+    default_timezone        IANA name selected on load. Default: "UTC".
+    default_timezone_label  Visible label for the default timezone option.
+                            Default: prettified form of default_timezone.
+    initial_view            FullCalendar initial view name. Default: "timeGridFourDay".
+    duration_days           Days shown in timeGridFourDay. Default: 4.
+    timezones_json          URL of a JSON array of IANA timezone names.
+                            Default: "/assets/timezones.json".
+    fullcalendar_src        URL of the FullCalendar global bundle.
+                            Default: jsDelivr CDN at 6.1.17. Override (for
+                            example, with a site-relative vendored path)
+                            when CDN reliability is a concern.
+{%- endcomment -%}
+
+{%- assign events_var = include.events_var | default: "calendarEvents" -%}
+{%- assign calendar_id = include.calendar_id | default: "calendar" -%}
+{%- assign selector_id = include.selector_id | default: "timezone-selector" -%}
+{%- assign display_id = include.display_id | default: "current-timezone-display" -%}
+{%- assign default_timezone = include.default_timezone | default: "UTC" -%}
+{%- assign default_timezone_label = include.default_timezone_label | default: default_timezone -%}
+{%- assign initial_view = include.initial_view | default: "timeGridFourDay" -%}
+{%- assign duration_days = include.duration_days | default: 4 -%}
+{%- assign timezones_json = include.timezones_json | default: "/assets/timezones.json" -%}
+{%- assign fullcalendar_src = include.fullcalendar_src | default: "https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js" -%}
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-timezone@0.5.40/builds/moment-timezone-with-data.min.js"></script>
+<script src="{{ fullcalendar_src }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/moment-timezone@6.1.17/index.global.min.js"></script>
+
+<div class="calendar-timezone-picker">
+  Timezone:
+  <select id="{{ selector_id }}">
+    <option value="local">local</option>
+    <option value="UTC">UTC</option>
+    <option value="{{ default_timezone }}" selected>{{ default_timezone_label }}</option>
+  </select>
+  <span id="{{ display_id }}" style="margin-left: 10px; font-weight: bold; color: #666;"></span>
+</div>
+
+<div id="{{ calendar_id }}"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var events = (typeof {{ events_var }} !== 'undefined') ? {{ events_var }} : [];
+    var firstEventDate = events.length ? events[0].start : undefined;
+
+    var calendarEl = document.getElementById({{ calendar_id | jsonify }});
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      themeSystem: 'bootstrap5',
+      initialView: {{ initial_view | jsonify }},
+      views: {
+        timeGridFourDay: {
+          type: 'timeGrid',
+          duration: { days: {{ duration_days }} }
+        }
+      },
+      events: events,
+      initialDate: firstEventDate,
+      slotEventOverlap: false,
+      nowIndicator: true,
+      timeZone: {{ default_timezone | jsonify }},
+      eventContent: function (arg) {
+        var title = arg.event.title;
+        var subtitle = arg.event.extendedProps && arg.event.extendedProps.subtitle;
+        return {
+          html:
+            '<div class="fc-event-title">' + title +
+            (subtitle
+              ? '<div class="fc-event-subtitle" style="font-size: 0.85em; color: #fff;">' + subtitle + '</div>'
+              : '') +
+            '</div>'
+        };
+      }
+    });
+    calendar.render();
+
+    var selector = document.getElementById({{ selector_id | jsonify }});
+    var display = document.getElementById({{ display_id | jsonify }});
+
+    function prettify(tz) {
+      return tz.replace(/\//g, ' / ').replace(/_/g, ' ');
+    }
+
+    function updateTimezone(tz) {
+      calendar.setOption('timeZone', tz);
+      calendar.render();
+      if (!display) return;
+      var label = 'Calendar Timezone: ';
+      if (tz === 'local') {
+        label += 'Local Time';
+      } else if (tz === 'UTC') {
+        label += 'UTC';
+      } else {
+        label += prettify(tz);
+      }
+      try {
+        var now = new Date();
+        var timeString = now.toLocaleTimeString('en-US', {
+          timeZone: tz === 'local' ? undefined : tz,
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        label += ' (' + timeString + ')';
+      } catch (err) {
+        console.warn('Invalid timezone for time display:', tz);
+      }
+      display.textContent = label;
+    }
+
+    async function populateTimezones() {
+      try {
+        var response = await fetch({{ timezones_json | relative_url | jsonify }});
+        var timezones = await response.json();
+        // Preserve the first three options (local, UTC, default) and append the rest.
+        timezones.forEach(function (tz) {
+          var option = document.createElement('option');
+          option.value = tz;
+          option.textContent = prettify(tz);
+          selector.appendChild(option);
+        });
+      } catch (err) {
+        console.error('Failed to load timezones:', err);
+      }
+    }
+
+    selector.addEventListener('change', function () {
+      updateTimezone(this.value);
+    });
+
+    populateTimezones();
+    updateTimezone({{ default_timezone | jsonify }});
+  });
+</script>

@@ -4,39 +4,33 @@ title: Program
 permalink: /program/
 ---
 
-{% assign sorted_sessions = site.data.sessions | sort: "date" %}
+{% assign sorted_sessions = site.data.sessions | sort: "start" %}
 
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    let sessionsData = {{ sorted_sessions | jsonify }};
-    let firstEventDate = sessionsData[0]["start"]
-    <!-- TODO: loop over the array and set url property to the session page. -->
-    console.log(sessionsData)
-    for (i in sessionsData) {
-        let sessionId = sessionsData[i]["id"]
-        sessionsData[i]["url"] = `{{ site.baseurl }}/sessions/${sessionId}.html`
-    }
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        themeSystem: 'bootstrap5',
-        timeZone: 'AEST',
-        initialView: 'timeGridWeek',
-        events: sessionsData,
-        initialDate: firstEventDate,
+  var calendarEvents = (function () {
+    var sessions = {{ sorted_sessions | jsonify }};
+    var typeColours = {
+      admin:      '#2e312d',
+      keynote:    '#b69255',
+      papers:     '#7e7a72',
+      artworks:   '#565b68',
+      workshops:  '#5f6e62',
+      discussion: '#97a7b6'
+    };
+    return sessions.map(function (session) {
+      var colour = typeColours[session.type];
+      return Object.assign({}, session, {
+        url: '{{ site.baseurl }}/sessions/' + session.id + '.html',
+        backgroundColor: colour,
+        borderColor: colour
+      });
     });
-    calendar.render();
-
-    <!-- experiments with the session data... -->
-    console.log(sessionsData)
-    var event = calendar.getEventById('research1')
-    console.log(event)
-
-    var start = event.start // a property (a Date object)
-    console.log(start.toISOString()) // "2018-09-01T00:00:00.000Z"
-  });
+  })();
 </script>
-<div id='calendar'></div>
+
+{% include calendar-timezone-picker.html
+   default_timezone="Australia/Sydney"
+   default_timezone_label="Sydney (Default)" %}
 
 <h2>Sessions</h2>
 
@@ -56,7 +50,7 @@ permalink: /program/
           <h6 class="card-subtitle mb-2 text-muted">{{ session.type | capitalize }} Session</h6>
           <p class="card-text">
             <strong>Date:</strong> {{ session.date | date: "%A, %B %d, %Y" }}<br>
-            <strong>Time:</strong> {{ session.date | date: "%I:%M %p" }} AEST<br>
+            <strong>Time:</strong> {{ session.date | date: "%I:%M %p" }}<br>
             <strong>Location:</strong> {{ session.location }}<br>
             <strong>Chair:</strong> {{ session.chair }}
           </p>
